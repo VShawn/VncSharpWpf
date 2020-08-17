@@ -124,9 +124,6 @@ namespace VncSharpWpf
                 scrollviewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             }
-            
-			// Users of the control can choose to use their own Authentication GetPassword() method via the delegate above.  This is a default only.
-			GetPassword = new AuthenticateDelegate(PasswordDialogWpf.GetPassword);
 
             // EventHandler Settings
             this.designModeDesktop.SizeChanged +=new System.Windows.SizeChangedEventHandler(SizeChangedEventHandler);
@@ -386,7 +383,17 @@ namespace VncSharpWpf
 
             if (passwordPending) {
                 // Server needs a password, so call which ever method is refered to by the GetPassword delegate.
-                string password = GetPassword();
+                string password = "";
+
+                if (GetPassword == null)
+                {
+                    // Users of the control can choose to use their own Authentication GetPassword() method via the delegate above.  This is a default only.
+                    password = PasswordDialogWpf.GetPassword();
+                }
+                else
+                {
+                    password = GetPassword();
+                }
 
                 if (password == null) {
                     // No password could be obtained (e.g., user clicked Cancel), so stop connecting
@@ -441,7 +448,18 @@ namespace VncSharpWpf
             if (authentication)
             {
                 // Server needs a password, so call which ever method is refered to by the GetPassword delegate.
-                string password = GetPassword();
+                string password = "";
+
+                if (GetPassword == null)
+                {
+                    // Users of the control can choose to use their own Authentication GetPassword() method via the delegate above.  This is a default only.
+                    password = PasswordDialogWpf.GetPassword();
+                }
+                else
+                {
+                    password = GetPassword();
+                }
+
 
                 if (password == null)
                 {
@@ -500,7 +518,7 @@ namespace VncSharpWpf
         /// <param name="scaled">Determines whether to use desktop scaling or leave it normal and clip.</param>
         public void SetScalingMode(bool scaled)
         {
-            if (scaled)
+            if (!scaled)
             {
                 scrollviewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
                 scrollviewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;

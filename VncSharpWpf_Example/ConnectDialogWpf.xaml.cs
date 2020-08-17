@@ -21,6 +21,7 @@ namespace VncSharpWpf_Example
         public ConnectDialogWpf()
         {
             InitializeComponent();
+            this.VncHostBox.Text = "127.0.0.1:5900";
         }
 
         /// <summary>

@@ -47,14 +47,14 @@ namespace VncSharpWpf_Example
         {
             Dispatcher.Invoke(new Action(() =>
             {
-            MenuItem_FullScrennRefresh.IsEnabled = false;
-            MenuItem_SendKeys.IsEnabled = false;
-            MenuItem_CopyClipBoard.IsEnabled = false;
+                MenuItem_FullScrennRefresh.IsEnabled = false;
+                MenuItem_SendKeys.IsEnabled = false;
+                MenuItem_CopyClipBoard.IsEnabled = false;
 
-            MenuItem_Connect.IsEnabled = true;
-            MenuItem_DisConnect.IsEnabled = false;
-            MenuItem_Listen.IsEnabled = true;
-            MenuItem_StopListen.IsEnabled = false;
+                MenuItem_Connect.IsEnabled = true;
+                MenuItem_DisConnect.IsEnabled = false;
+                MenuItem_Listen.IsEnabled = true;
+                MenuItem_StopListen.IsEnabled = false;
             }));
 
         }
@@ -69,7 +69,20 @@ namespace VncSharpWpf_Example
                 {
                     try
                     {
-                        rdp.Connect("localhost", MenuItem_ViewOnly.IsChecked, MenuItem_ClippedView.IsChecked);
+                        rdp.VncPort = 5900;
+                        if (vncHost.Split(':').Length == 2)
+                        {
+                            var strings = vncHost.Split(':');
+                            if (int.TryParse(strings[1], out int p))
+                            {
+                                rdp.VncPort = p;
+                            }
+                            rdp.Connect(strings[0], MenuItem_ViewOnly.IsChecked, !MenuItem_ClippedView.IsChecked);
+                        }
+                        else
+                        {
+                            rdp.Connect(vncHost, MenuItem_ViewOnly.IsChecked, !MenuItem_ClippedView.IsChecked);
+                        }
                     }
                     catch (VncProtocolException vex)
                     {
@@ -87,7 +100,7 @@ namespace VncSharpWpf_Example
                                         MessageBoxButton.OK,
                                         MessageBoxImage.Exclamation);
                     }
-                } 
+                }
             }
         }
 
@@ -108,7 +121,7 @@ namespace VncSharpWpf_Example
             {
                 string selectedAddr = (sender as MenuItem).Header.ToString();
 
-                rdp.Listen(selectedAddr, 5500, MenuItem_ViewOnly.IsChecked, MenuItem_ClippedView.IsChecked);
+                rdp.Listen(selectedAddr, 5500, MenuItem_ViewOnly.IsChecked, !MenuItem_ClippedView.IsChecked);
 
                 MenuItem_Connect.IsEnabled = false;
                 MenuItem_DisConnect.IsEnabled = false;
@@ -172,7 +185,7 @@ namespace VncSharpWpf_Example
             MenuItem_ScaledView.IsChecked = false;
             MenuItem_ScaledView.IsEnabled = true;
 
-            rdp.SetScalingMode(true);
+            rdp.SetScalingMode(false);
         }
 
         private void MenuItem_CopyClipBoard_Click(object sender, RoutedEventArgs e)
@@ -190,7 +203,7 @@ namespace VncSharpWpf_Example
             MenuItem_ScaledView.IsChecked = true;
             MenuItem_ScaledView.IsEnabled = false;
 
-            rdp.SetScalingMode(false);
+            rdp.SetScalingMode(true);
         }
 
         private void MenuItem_ViewOnly_Click(object sender, RoutedEventArgs e)

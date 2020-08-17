@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:rdp="clr-namespace:VncSharpWpf;assembly=VncSharpWpf"
         xmlns:local="clr-namespace:VncSharpWpf_Example"
+        xmlns:net="clr-namespace:System.Net;assembly=System"
         Icon="vncviewer.ico"
         Title="MainWindow" Height="350" Width="525">
     <DockPanel>
@@ -10,7 +11,7 @@
             <MenuItem Header="File" Name="File">
                 <MenuItem.Resources>
                     <ObjectDataProvider x:Key="localAddr" ObjectType="{x:Type local:LocalAddressService}" MethodName="GetLocalIpAddress" />
-                    <DataTemplate x:Key="MenuItems" DataType="IPAddress">
+                    <DataTemplate x:Key="MenuItems" DataType="net:IPAddress">
                         <MenuItem Header="{Binding Path=.}" Click="MenuItem_Listen_Click"/>
                     </DataTemplate>
                 </MenuItem.Resources>
